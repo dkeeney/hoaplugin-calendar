@@ -595,7 +595,7 @@ function hoa_handle_save_event() {
 
 
             case 'series_resume':
-                resume_series($pivot_id, $target_date);
+                $repo->resume_series($pivot_id, $target_date);
                 break;
 
 

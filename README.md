@@ -45,17 +45,18 @@ A clean, high-level map of the plugin architecture. Standard vendor directories,
 ├── includes/               # 
 │   ├── Compiler.php        # Matrix compilation engine
 │   ├── Repository.php      # Data mapping layer
-│   └── TestRunner.php      # Native server-side regression tests.
+│   ├── Defaults.php        # Sample data seeded on first activation
+│   └── core-bootstrap.php  # Shared hooks, shortcode, and AJAX handlers (also used by Pro)
 ├── composer.json           # PHP dependency declarations 
 ├── deploy.sh               # Shell script for production release builds
-├── hoapg-calendar.php      # Core master plugin entry point file
+├── hoaplugin-calendar.php  # Core master plugin entry point file
 └── uninstall.php           # App delete cleanup.
 
 ```
 
 ## 🚀 Development environment
 To setup the development and build environment on a Linux system running WordPress.
-### 1. Obtain the repository by cloning from github https://github.com/dkeeney/fsbhoa-calendar.git
+### 1. Obtain the repository by cloning from github https://github.com/dkeeney/hoaplugin-calendar.git
 ### 2. Install dependencies using Composer
  Run the following command in the plugin root to install the `rlanvin/php-rrule` package and generate the `vendor/` folder:
    ```bash
@@ -63,21 +64,15 @@ To setup the development and build environment on a Linux system running WordPre
    composer dump-autoload
    ```
 
-### 3. Initialize the frontend automation testing drivers via npm:
-   ```bash
-   npm install
-   ```
-
-### 4. Install a symbolic link from WordPress base folder to the repository.
+### 3. Install a symbolic link from WordPress base folder to the repository.
    ```bash
    cd /var/www/html/wp-content/plugins/
    ln -s ~/hoaplugin-calendar/ hoaplugin-calendar
    ```
 
-### 3. Full UI regression tests
 ## 🧪 Testing and Sandbox Bridge
-This plugin features a built-in automated regression battery powered by a Playwright environment. 
-* The sandbox scripts will enable the `fsb_test_mode` cookie to isolate operations inside temporary `_test` tables to avoid risking live database corruption.
+The automated regression battery (Playwright plus `TestRunner.php`) lives in the separate `hoaplugin-calendar-test` plugin. Run `npm install` and `./test.sh` from that repository.
+* The sandbox scripts set the `hoa_test_mode` cookie, which routes operations to temporary `test_`-prefixed tables and a separate JSON file to avoid risking live database corruption.
 
 ---
 
@@ -98,7 +93,7 @@ The calendar relies on a parent-child record structure to handle the complexitie
 Third-Party Engine Infrastructure
 The scheduling backend architecture integrates the rlanvin/php-rrule library via Composer to guarantee absolute compliance with the iCalendar RFC 5545 international recurrence specification.
 
-Primary Matrix Computation: The dependency is leveraged directly by Compiler.php during the caching pipeline. It parses complex RRule constraints to generate discrete event instances within your timeline window, flattening the output into the ultra-fast public snapshot file: wp-content/uploads/hoapg-calendar/calendar-events.json.
+Primary Matrix Computation: The dependency is leveraged directly by Compiler.php during the caching pipeline. It parses complex RRule constraints to generate discrete event instances within your timeline window, flattening the output into the ultra-fast public snapshot file: wp-content/uploads/hoaplugin-calendar/calendar-events.json.
 
 Personal Device Syndication: The engine uses this data structure to format and stream standard .ics data payloads via the Webcal loop, enabling residents to subscribe to community sequences directly through native device clients (e.g., Apple Calendar, Google Calendar, Outlook).
 

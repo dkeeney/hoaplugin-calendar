@@ -14,15 +14,15 @@
  * Text Domain:       hoaplugin-calendar
  *
  * Shortcodes:     
- *    [hoaplugin-calendar]
+ *    [hoaplugin_calendar]
  * This is the master entry point for the plugin. When used without parameters, 
  * it defaults to the hybrid layout, loading both the monthly grid workspace 
  * and the agenda stream workspace into the container.
  *
- *     [hoaplugin-calendar 'layout' => 'month'] 
+ *     [hoaplugin_calendar layout="month"] 
  * Skips the agenda module and exclusively loads the monthly grid.
  *
- *     [hoaplugin-calendar 'layout' => 'agenda'] 
+ *     [hoaplugin_calendar layout="agenda"] 
  * Skips the monthly grid and shows only the agenda view.
  *     
  */
