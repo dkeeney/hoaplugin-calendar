@@ -40,6 +40,7 @@ sudo rsync -av --delete \
     --exclude=".aider*" \
     --exclude="*.zip" \
     --exclude="deploy.sh" \
+    --exclude="CLAUDE.md" \
     --exclude="test.sh" \
     --exclude=".DS_Store" \
     ./ "$TESTBED_WP_DIR/" > /dev/null
@@ -60,6 +61,7 @@ zip -r9 "$DIR_NAME/$ZIP_FOR_SERVER" "$DIR_NAME" \
     -x "$DIR_NAME/.aider*" \
     -x "$DIR_NAME/test.sh" \
     -x "$DIR_NAME/README.md" \
+    -x "$DIR_NAME/CLAUDE.md" \
     -x "$DIR_NAME/deploy.sh" \
     -x "$DIR_NAME/assets/screenshot-*.png" \
     -x "$DIR_NAME/.DS_Store" > /dev/null
@@ -72,6 +74,7 @@ zip -r9 "$DIR_NAME/$ZIP_FOR_WPORG" "$DIR_NAME" \
     -x "$DIR_NAME/.aider*" \
     -x "$DIR_NAME/docs/*" \
     -x "$DIR_NAME/README.md" \
+    -x "$DIR_NAME/CLAUDE.md" \
     -x "$DIR_NAME/test.sh" \
     -x "$DIR_NAME/deploy.sh" \
     -x "$DIR_NAME/assets/screenshot-*.png" \
