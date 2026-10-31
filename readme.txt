@@ -4,7 +4,7 @@ Tags: calendar, events, hoa, scheduling, community
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 8.0
-Stable tag: 1.1.34
+Stable tag: 1.1.35
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
