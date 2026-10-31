@@ -868,7 +868,40 @@ function hoa_handle_zip_upload() {
     if ( is_wp_error( $unzip_result ) ) {
         echo '<div class="notice notice-error"><p>Failed to extract ZIP: ' . esc_html( $unzip_result->get_error_message() ) . '</p></div>';
     } else {
+        hoa_purge_optimized_bg_copies( $target_dir );
         echo '<div class="notice notice-success is-dismissible"><p>Background images successfully uploaded and extracted!</p></div>';
+    }
+}
+
+
+/**
+ * Image optimizer plugins keep WebP/AVIF copies of our backgrounds and serve
+ * them to browsers in place of the PNGs. Those copies are not rebuilt when a
+ * ZIP overwrites the PNGs, so residents keep seeing the old artwork.
+ * Delete them; the optimizer regenerates fresh copies if it is configured to.
+ */
+function hoa_purge_optimized_bg_copies( $target_dir ) {
+    $target_dir = trailingslashit( wp_normalize_path( $target_dir ) );
+    $content_dir = trailingslashit( wp_normalize_path( WP_CONTENT_DIR ) );
+
+    // Copies stored next to the originals (LiteSpeed Cache, EWWW, ShortPixel: cal-2026-03.png.webp)
+    $dirs = array( $target_dir );
+
+    // Copies stored in a mirrored tree (Converter for Media, WebP Express)
+    if ( strpos( $target_dir, $content_dir ) === 0 ) {
+        $rel = substr( $target_dir, strlen( $content_dir ) ); // e.g. uploads/hoaplugin-calendar/backgrounds/
+        $dirs[] = $content_dir . 'uploads-webpc/' . $rel;
+        $dirs[] = $content_dir . 'webp-express/webp-images/' . $rel;
+        $dirs[] = $content_dir . 'webp-express/webp-images/doc-root/wp-content/' . $rel;
+    }
+
+    // GLOB_BRACE is unavailable on some hosts, so glob each extension separately.
+    foreach ( $dirs as $dir ) {
+        foreach ( array( '*.webp', '*.avif' ) as $pattern ) {
+            foreach ( glob( $dir . $pattern ) ?: array() as $file ) {
+                wp_delete_file( $file );
+            }
+        }
     }
 }
 
