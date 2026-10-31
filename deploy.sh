@@ -97,7 +97,7 @@ if [[ "$PLUGIN_VERSION" == *"RC"* ]]; then
 else
     # It is a production release! Send the server zip to Arvixe.
     echo "Deploying to License Server..."
-    scp "$ZIP_FOR_SERVER" scguild@keolight.com:~/hoaplugin.com/wp-content/uploads/
+    scp "$ZIP_FOR_SERVER" scguild@keolight.com:~/hoaplugin.com/wp-content/uploads/edd/
     
     # Clean up the server zip locally since it was transmitted
     rm -f "$ZIP_FOR_SERVER"
