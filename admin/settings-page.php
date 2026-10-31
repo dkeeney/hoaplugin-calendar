@@ -210,7 +210,10 @@ function hoa_render_bg_manager() {
     <?php
     $current_file = "cal-" . date('Y-m') . ".png";
     if (file_exists($bg_path_base . $current_file)) {
-        echo '<img src="' . $bg_url_base . $current_file . '" style="max-width:400px; border:2px solid #333;">';
+        // Cache-bust with the file's mtime so a fresh upload shows immediately
+        // (the server tells browsers to keep images for a day or more).
+        $preview_url = add_query_arg( 'v', filemtime( $bg_path_base . $current_file ), $bg_url_base . $current_file );
+        echo '<img src="' . esc_url( $preview_url ) . '" style="max-width:400px; border:2px solid #333;">';
     } else {
         echo '<p style="color:red;">No background found for ' . date('F Y') . ' (Expected: ' . $current_file . ')</p>';
     }
