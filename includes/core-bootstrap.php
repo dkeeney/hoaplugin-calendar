@@ -98,13 +98,20 @@ function hoa_serve_calendar_json() {
 
 
 
+// Cache-buster for plugin assets: changes whenever the file itself changes,
+// so browsers pick up new JS/CSS after every deploy (Free and Pro alike).
+function hoa_asset_ver( $rel_path ) {
+    $file = HOAPLUGIN_ROOT_DIR . $rel_path;
+    return file_exists( $file ) ? (string) filemtime( $file ) : false;
+}
+
 add_action('admin_enqueue_scripts', function($hook) {
     // Only load on our settings page to keep admin clean
     if ($hook !== 'toplevel_page_hoa-cal-settings') return;
 
     // Load the CSS
-    wp_enqueue_style('hoa-cal-style', HOAPLUGIN_ROOT_URL . 'assets/css/calendar-style.css');
-    wp_enqueue_style('hoa-cell-style', HOAPLUGIN_ROOT_URL . 'assets/css/day-cell-style.css');
+    wp_enqueue_style('hoa-cal-style', HOAPLUGIN_ROOT_URL . 'assets/css/calendar-style.css', array(), hoa_asset_ver('assets/css/calendar-style.css'));
+    wp_enqueue_style('hoa-cell-style', HOAPLUGIN_ROOT_URL . 'assets/css/day-cell-style.css', array(), hoa_asset_ver('assets/css/day-cell-style.css'));
 
     // Enqueue the same scripts used for the front-end
     hoa_enqueue_calendar_scripts();
@@ -151,16 +158,15 @@ add_action('wp_enqueue_scripts', function() {
 
 function hoa_enqueue_calendar_scripts() {
     //error_log("HOAPLUGIN CALENDAR: hoa_enqueue_calender_scripts() called");
-    $ver = '1.1';
     $current_user = wp_get_current_user();
     $user_email = !empty($current_user->user_email) ? $current_user->user_email : '';
 
 
     // Load the View logic and editor
-    wp_enqueue_script( 'hoa-cal-view', HOAPLUGIN_ROOT_URL . 'assets/js/calendar-view.js', $ver, true );
+    wp_enqueue_script( 'hoa-cal-view', HOAPLUGIN_ROOT_URL . 'assets/js/calendar-view.js', array(), hoa_asset_ver('assets/js/calendar-view.js'), true );
 
     // 1. ALWAYS register the script so WordPress knows it exists and what its dependencies are
-    wp_register_script( 'hoa-cal-editor', HOAPLUGIN_ROOT_URL . 'assets/js/calendar-editor.js', array('hoa-cal-view'), $ver, true );
+    wp_register_script( 'hoa-cal-editor', HOAPLUGIN_ROOT_URL . 'assets/js/calendar-editor.js', array('hoa-cal-view'), hoa_asset_ver('assets/js/calendar-editor.js'), true );
 
 
     $is_admin = current_user_can('manage_options');
@@ -183,9 +189,9 @@ function hoa_enqueue_calendar_scripts() {
     }
 
 
-    wp_enqueue_style('hoa-cal-style', HOAPLUGIN_ROOT_URL . 'assets/css/calendar-style.css');
-    wp_enqueue_style('hoa-agenda-style', HOAPLUGIN_ROOT_URL . 'assets/css/agenda-style.css');
-    wp_enqueue_style('hoa-cell-style', HOAPLUGIN_ROOT_URL . 'assets/css/day-cell-style.css');
+    wp_enqueue_style('hoa-cal-style', HOAPLUGIN_ROOT_URL . 'assets/css/calendar-style.css', array(), hoa_asset_ver('assets/css/calendar-style.css'));
+    wp_enqueue_style('hoa-agenda-style', HOAPLUGIN_ROOT_URL . 'assets/css/agenda-style.css', array(), hoa_asset_ver('assets/css/agenda-style.css'));
+    wp_enqueue_style('hoa-cell-style', HOAPLUGIN_ROOT_URL . 'assets/css/day-cell-style.css', array(), hoa_asset_ver('assets/css/day-cell-style.css'));
     
     // Fetch data for the JS
     $locations = $repo->get_locations();
